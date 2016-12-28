@@ -48,9 +48,9 @@ public class LambdaVsAnonymousClass {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public void testLambda() {
-        // lambda expressions
-        Lambda lambda = () -> System.out.println("ram");
-        lambda.test();
+        // nonCapturing expressions
+        NonCapturing nonCapturing = () -> System.out.println("ram");
+        nonCapturing.test();
     }
 
     @Benchmark
@@ -58,13 +58,38 @@ public class LambdaVsAnonymousClass {
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public void testAnonymousClass() {
         // anonymous classes
-        Lambda lambda = new Lambda() {
+        NonCapturing nonCapturing = new NonCapturing() {
             @Override
             public void test() {
                 System.out.println("ram");
             }
         };
-        lambda.test();
+        nonCapturing.test();
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void testLambdaCapturing() {
+        // lambda expressions
+        final int i = 0;
+        Capturing capturing = n -> System.out.println(n);
+        capturing.test(i);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void testAnonymousClassCapturing() {
+        // anonymous classes
+        final int i = 0;
+        Capturing capturing = new Capturing() {
+            @Override
+            public void test(int n) {
+                System.out.println(n);
+            }
+        };
+        capturing.test(i);
     }
 
     public static void main(String[] args) throws RunnerException {
@@ -80,6 +105,11 @@ public class LambdaVsAnonymousClass {
 }
 
 @FunctionalInterface
-interface Lambda {
+interface NonCapturing {
     void test();
+}
+
+@FunctionalInterface
+interface Capturing {
+    void test(int n);
 }
