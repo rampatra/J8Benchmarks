@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * The below benchmarks compares the average time for a single execution of the benchmark methods for
- * lambda (non-capturing and capturing) and anonymous classes.
+ * lambda (non-FI and FI) and anonymous classes.
  * <p>
  * Some useful links:
  * 1. <a href="http://cr.openjdk.java.net/~briangoetz/lambda/lambda-translation.html">Lambda Translation</a>
@@ -27,50 +27,82 @@ public class LambdaVsAnonymousClass {
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public void testLambda() {
-        // nonCapturing expressions
-        NonCapturing nonCapturing = () -> System.out.println("ram");
-        nonCapturing.test();
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public void testLambdaNonCapturing() {
+        // lambda expressions
+        FI f1 = () -> {
+            return 2 + 2;
+        };
+        f1.test();
+        // lambda expressions
+        FI f2 = () -> {
+            return 2 + 2;
+        };
+        f2.test();
     }
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public void testAnonymousClass() {
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public void testAnonymousClassNonCapturing() {
         // anonymous classes
-        NonCapturing nonCapturing = new NonCapturing() {
+        FI f1 = new FI() {
             @Override
-            public void test() {
-                System.out.println("ram");
+            public int test() {
+                return 5;
             }
         };
-        nonCapturing.test();
+        f1.test();
+        // anonymous classes
+        FI f2 = new FI() {
+            @Override
+            public int test() {
+                return 5;
+            }
+        };
+        f2.test();
     }
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void testLambdaCapturing() {
         // lambda expressions
-        final int i = 0;
-        Capturing capturing = n -> System.out.println(n);
-        capturing.test(i);
+        final int i = 1;
+        FI f1 = () -> {
+            return i + 5;
+        };
+        f1.test();
+        // lambda expressions
+        final int j = 2;
+        FI f2 = () -> {
+            return j + 5;
+        };
+        f2.test();
     }
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void testAnonymousClassCapturing() {
         // anonymous classes
-        final int i = 0;
-        Capturing capturing = new Capturing() {
+        final int i = 1;
+        FI f1 = new FI() {
             @Override
-            public void test(int n) {
-                System.out.println(n);
+            public int test() {
+                return i + 5;
             }
         };
-        capturing.test(i);
+        f1.test();
+        // anonymous classes
+        final int j = 2;
+        FI f2 = new FI() {
+            @Override
+            public int test() {
+                return j + 5;
+            }
+        };
+        f2.test();
     }
 
     public static void main(String[] args) throws RunnerException {
@@ -86,11 +118,6 @@ public class LambdaVsAnonymousClass {
 }
 
 @FunctionalInterface
-interface NonCapturing {
-    void test();
-}
-
-@FunctionalInterface
-interface Capturing {
-    void test(int n);
+interface FI {
+    int test();
 }
