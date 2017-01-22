@@ -69,9 +69,7 @@ public class LambdaVsAnonymousClass {
     public void testLambdaCapturing() {
         // lambda expressions
         final int i = 1;
-        FI f1 = () -> {
-            return i + 5;
-        };
+        FI f1 = () -> i + 5;
         f1.test();
         // lambda expressions
         final int j = 2;
@@ -108,8 +106,8 @@ public class LambdaVsAnonymousClass {
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(LambdaVsAnonymousClass.class.getSimpleName())
-                .warmupIterations(5)
-                .measurementIterations(5)
+                .warmupIterations(0)
+                .measurementIterations(2)
                 .forks(1)
                 .build();
 
