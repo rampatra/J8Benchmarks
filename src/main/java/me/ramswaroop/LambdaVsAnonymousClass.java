@@ -29,15 +29,13 @@ public class LambdaVsAnonymousClass {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void testLambdaNonCapturing() {
-        // lambda expressions
+        // lambda statement
         FI f1 = () -> {
             return 2 + 2;
         };
         f1.test();
-        // lambda expressions
-        FI f2 = () -> {
-            return 2 + 2;
-        };
+        // lambda expression
+        FI f2 = () -> 2 + 2;
         f2.test();
     }
 
@@ -67,11 +65,11 @@ public class LambdaVsAnonymousClass {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void testLambdaCapturing() {
-        // lambda expressions
+        // lambda expression
         final int i = 1;
         FI f1 = () -> i + 5;
         f1.test();
-        // lambda expressions
+        // lambda statement
         final int j = 2;
         FI f2 = () -> {
             return j + 5;
@@ -107,7 +105,7 @@ public class LambdaVsAnonymousClass {
         Options opt = new OptionsBuilder()
                 .include(LambdaVsAnonymousClass.class.getSimpleName())
                 .warmupIterations(0)
-                .measurementIterations(2)
+                .measurementIterations(5)
                 .forks(1)
                 .build();
 
